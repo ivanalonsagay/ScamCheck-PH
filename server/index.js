@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 // Load .env variables
 dotenv.config();
@@ -45,6 +46,9 @@ app.get("/api/health", (req, res) => {
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+
+// Report routes
+app.use("/api/reports", reportRoutes);
 
 // Handle unknown API routes
 app.use((req, res) => {

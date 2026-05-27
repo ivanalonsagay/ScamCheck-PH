@@ -23,11 +23,13 @@ const reportSchema = new mongoose.Schema(
     scamContent: {
       type: String,
       trim: true,
+      default: "",
     },
 
     suspiciousLink: {
       type: String,
       trim: true,
+      default: "",
     },
 
     description: {
@@ -39,7 +41,13 @@ const reportSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["Pending", "Verified", "Rejected"],
-      default: "Pending", // New reports start as pending
+      default: "Pending", // New reports need admin review
+    },
+
+    riskLevel: {
+      type: String,
+      enum: ["Low Risk", "Medium Risk", "High Risk"],
+      default: "Medium Risk", // Used for public warning cards
     },
 
     safetyTip: {
@@ -48,14 +56,20 @@ const reportSchema = new mongoose.Schema(
       default: "",
     },
 
+    adminRemarks: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     submittedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Connects report to user
+      ref: "User", // Connects report to the user who submitted it
       required: true,
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // Adds createdAt and updatedAt
   }
 );
 
