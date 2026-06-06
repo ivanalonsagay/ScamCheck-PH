@@ -1,7 +1,19 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { LogOut, ShieldCheck } from "lucide-react";
+import useAuth from "../hooks/useAuth";
 
 function Sidebar({ items, title = "ScamCheck PH" }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear login data
+    logout();
+
+    // Go back to public home
+    navigate("/", { replace: true });
+  };
+
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-72 bg-navy text-white lg:block">
       <div className="flex h-full flex-col">
@@ -43,7 +55,10 @@ function Sidebar({ items, title = "ScamCheck PH" }) {
         </div>
 
         <div className="mt-auto px-6 py-6">
-          <button className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-blue-100 hover:bg-white/10">
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-blue-100 hover:bg-white/10"
+          >
             <LogOut size={20} />
             Log Out
           </button>

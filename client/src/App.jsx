@@ -1,5 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import PublicLayout from "./layouts/PublicLayout";
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
@@ -22,35 +25,51 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public website routes */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/warnings" element={<WarningsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-        </Route>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public website routes */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/warnings" element={<WarningsPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+          </Route>
 
-        {/* User dashboard routes */}
-        <Route path="/dashboard" element={<UserLayout />}>
-          <Route index element={<UserDashboardPage />} />
-          <Route path="submit-report" element={<SubmitReportPage />} />
-          <Route path="my-reports" element={<MyReportsPage />} />
-        </Route>
+          {/* Protected user dashboard routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <UserLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<UserDashboardPage />} />
+            <Route path="submit-report" element={<SubmitReportPage />} />
+            <Route path="my-reports" element={<MyReportsPage />} />
+          </Route>
 
-        {/* Admin dashboard routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboardPage />} />
-          <Route path="reports" element={<ManageReportsPage />} />
-        </Route>
+          {/* Protected admin dashboard routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboardPage />} />
+            <Route path="reports" element={<ManageReportsPage />} />
+          </Route>
 
-        {/* Unknown page */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Unknown page */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

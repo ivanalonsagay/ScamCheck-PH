@@ -1,12 +1,18 @@
 import { Link, NavLink } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import Button from "./Button";
+import useAuth from "../hooks/useAuth";
 
 function Navbar() {
+  const { user, logout } = useAuth();
+
   const linkClass = ({ isActive }) =>
     `text-sm font-semibold transition ${
       isActive ? "text-blue-300" : "text-white hover:text-blue-200"
     }`;
+
+  const dashboardPath =
+    user?.role === "admin" ? "/admin/dashboard" : "/dashboard";
 
   return (
     <header className="sticky top-0 z-40 bg-navy text-white shadow-lg">
@@ -39,15 +45,34 @@ function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link to="/signin">
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              Sign In
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to={dashboardPath}>
+                <Button>Dashboard</Button>
+              </Link>
 
-          <Link to="/signup">
-            <Button>Sign Up</Button>
-          </Link>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                onClick={logout}
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/signin">
+                <Button variant="ghost" className="text-white hover:bg-white/10">
+                  Sign In
+                </Button>
+              </Link>
+
+              <Link to="/signup">
+                <Button>Sign Up</Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
