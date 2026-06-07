@@ -91,7 +91,7 @@ ScamCheck-PH/
 ## Developer
 
 ```text
-Name: Ivan Alonso Sagay
+Name: Ivan Alonsagay
 Project: ScamCheck PH
 Type: MERN Stack Web Application
 ```
