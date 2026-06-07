@@ -1,4 +1,11 @@
-import { AlertCircle, CheckCircle, Clock3, FileText, PlusCircle } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Clock3,
+  FileText,
+  Home,
+  PlusCircle,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
@@ -54,12 +61,21 @@ function UserDashboardPage() {
           </p>
         </div>
 
-        <Link to="/dashboard/submit-report">
-          <Button>
-            <PlusCircle size={18} />
-            Report a Scam
-          </Button>
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link to="/">
+            <Button variant="outline">
+              <Home size={18} />
+              Home
+            </Button>
+          </Link>
+
+          <Link to="/dashboard/submit-report">
+            <Button>
+              <PlusCircle size={18} />
+              Report a Scam
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-5 md:grid-cols-4">
