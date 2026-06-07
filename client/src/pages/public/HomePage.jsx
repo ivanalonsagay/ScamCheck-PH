@@ -30,6 +30,30 @@ function HomePage() {
     },
   ];
 
+  const featureSlides = [
+    {
+      title: "Verify",
+      text: "Check scam warnings before clicking links.",
+      icon: BadgeCheck,
+    },
+    {
+      title: "Report",
+      text: "Submit suspicious messages to help others.",
+      icon: Send,
+    },
+    {
+      title: "Protect",
+      text: "Build a safer online community together.",
+      icon: Users,
+    },
+    {
+      title: "Built with MERN",
+      text: "React, Express, Node, and MongoDB Atlas.",
+      icon: Database,
+    },
+  ];
+  const marqueeSlides = [...featureSlides, ...featureSlides];
+
   return (
     <section className="bg-soft">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-2">
@@ -78,44 +102,33 @@ function HomePage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-5 pb-16">
-        <div className="card grid gap-6 p-6 md:grid-cols-4">
-          <div className="flex gap-4">
-            <BadgeCheck className="text-primary" />
-            <div>
-              <h3 className="font-bold">Verify</h3>
-              <p className="text-sm text-slate-500">
-                Check scam warnings before clicking links.
-              </p>
-            </div>
+        <div className="card overflow-hidden p-4">
+          <div className="mb-3">
+            <h2 className="text-lg font-bold">How ScamCheck PH Helps</h2>
           </div>
 
-          <div className="flex gap-4">
-            <Send className="text-primary" />
-            <div>
-              <h3 className="font-bold">Report</h3>
-              <p className="text-sm text-slate-500">
-                Submit suspicious messages to help others.
-              </p>
-            </div>
-          </div>
+          <div className="relative overflow-hidden">
+            <div className="flex w-max animate-feature-marquee gap-4 hover:[animation-play-state:paused]">
+              {marqueeSlides.map((feature, index) => {
+                const Icon = feature.icon;
 
-          <div className="flex gap-4">
-            <Users className="text-primary" />
-            <div>
-              <h3 className="font-bold">Protect</h3>
-              <p className="text-sm text-slate-500">
-                Build a safer online community together.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <Database className="text-primary" />
-            <div>
-              <h3 className="font-bold">Built with MERN</h3>
-              <p className="text-sm text-slate-500">
-                React, Express, Node, and MongoDB Atlas.
-              </p>
+                return (
+                  <article
+                    key={`${feature.title}-${index}`}
+                    className="w-[270px] rounded-xl border border-slate-100 bg-white p-5 md:w-[340px]"
+                  >
+                    <div className="flex gap-4">
+                      <Icon className="shrink-0 text-primary" />
+                      <div>
+                        <h3 className="font-bold">{feature.title}</h3>
+                        <p className="mt-1 text-sm leading-6 text-slate-500">
+                          {feature.text}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import logo from "../assets/logo.png";
@@ -19,7 +19,7 @@ function Sidebar({ items, title = "ScamCheck PH" }) {
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-72 bg-navy text-white lg:block">
       <div className="flex h-full flex-col">
         <div className="px-6 py-7">
-          <div className="mb-8 flex items-center gap-3">
+          <Link to="/" className="mb-8 flex items-center gap-3">
             <img
               src={logo}
               alt="ScamCheck PH logo"
@@ -30,7 +30,7 @@ function Sidebar({ items, title = "ScamCheck PH" }) {
               <h2 className="font-bold">{title}</h2>
               <p className="text-xs text-blue-100">Safer digital community</p>
             </div>
-          </div>
+          </Link>
 
           <nav className="space-y-2">
             {items.map((item) => {

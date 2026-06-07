@@ -12,6 +12,22 @@ const initialForm = {
   description: "",
 };
 
+const isValidLinkOrPhone = (value) => {
+  if (!value.trim()) {
+    return true;
+  }
+
+  const cleanPhone = value.replace(/\s|-/g, "");
+  const isPhone = /^\d{11}$/.test(cleanPhone);
+
+  try {
+    const url = new URL(value);
+    return isPhone || ["http:", "https:"].includes(url.protocol);
+  } catch {
+    return isPhone;
+  }
+};
+
 function SubmitReportPage() {
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
@@ -32,6 +48,14 @@ function SubmitReportPage() {
     setLoading(true);
     setMessage("");
     setError("");
+
+    if (!isValidLinkOrPhone(formData.suspiciousLink)) {
+      setLoading(false);
+      setError(
+        "Suspicious Link or Contact must be a valid http/https link or an 11-digit number."
+      );
+      return;
+    }
 
     try {
       await api.post("/reports", formData);
@@ -128,10 +152,15 @@ function SubmitReportPage() {
             <input
               className="input"
               name="suspiciousLink"
-              placeholder="Example: https://fake-link.com or 09xx xxx xxxx"
+              placeholder="Example: https://fake-link.com or 09171234567"
               value={formData.suspiciousLink}
               onChange={handleChange}
+              pattern="(https?:\/\/.+)|(\d[\d\s-]{10,})"
+              title="Enter a valid http/https link or an 11-digit number."
             />
+            <p className="mt-2 text-xs text-slate-400">
+              Must be a valid http/https link or an 11-digit number.
+            </p>
           </div>
 
           <div>

@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-import { Database, ShieldCheck } from "lucide-react";
+import { AlertTriangle, HelpCircle, ShieldCheck } from "lucide-react";
 import Navbar from "../components/Navbar";
 import logo from "../assets/logo.png";
 
@@ -12,14 +12,14 @@ function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="mt-auto bg-navy px-5 py-10 text-white">
-        <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[1.45fr_0.75fr_1fr_1fr]">
+      <footer className="mt-auto bg-navy px-5 py-7 text-white">
+        <div className="mx-auto grid max-w-7xl items-start gap-8 lg:grid-cols-[1.4fr_0.75fr_1fr_1fr]">
           <div>
             <div className="flex items-start gap-3">
               <img
                 src={logo}
                 alt="ScamCheck PH logo"
-                className="h-14 w-14 rounded-xl object-contain"
+                className="h-12 w-12 rounded-xl object-contain"
               />
               <div>
                 <h3 className="text-lg font-extrabold">ScamCheck PH</h3>
@@ -28,18 +28,19 @@ function PublicLayout() {
                 </p>
               </div>
             </div>
-            <p className="mt-5 max-w-lg text-sm leading-6 text-blue-100">
-              A MERN Stack platform for reporting suspicious online activity,
-              verifying scam reports, and publishing public safety warnings.
+
+            <p className="mt-4 max-w-lg text-sm leading-6 text-blue-100">
+              Report suspicious links or contacts, review verified warnings, and
+              learn safer habits before clicking, paying, or sharing information.
             </p>
           </div>
 
           <div>
-            <h4 className="mb-4 flex items-center gap-2 font-bold">
+            <h4 className="mb-3 flex items-center gap-2 font-bold">
               <ShieldCheck size={18} />
               Pages
             </h4>
-            <div className="space-y-3 text-sm text-blue-100">
+            <div className="space-y-2 text-sm text-blue-100">
               <Link className="block hover:text-white" to="/">
                 Home
               </Link>
@@ -56,30 +57,33 @@ function PublicLayout() {
           </div>
 
           <div>
-            <h4 className="mb-4 font-bold">Project Scope</h4>
-            <div className="space-y-3 text-sm text-blue-100">
-              <p>Login and registration</p>
-              <p>Report submission</p>
-              <p>Public warning board</p>
-              <p>Admin verification</p>
+            <h4 className="mb-3 flex items-center gap-2 font-bold">
+              <AlertTriangle size={18} />
+              Safety Tips
+            </h4>
+            <div className="space-y-2 text-sm text-blue-100">
+              <p>Do not share OTP, MPIN, or passwords.</p>
+              <p>Verify links through official websites.</p>
+              <p>Never pay fees to personal accounts.</p>
+              <p>Report suspicious messages early.</p>
             </div>
           </div>
 
           <div>
-            <h4 className="mb-4 flex items-center gap-2 font-bold">
-              <Database size={18} />
-              Built With
+            <h4 className="mb-3 flex items-center gap-2 font-bold">
+              <HelpCircle size={18} />
+              Need Help?
             </h4>
-            <div className="space-y-3 text-sm text-blue-100">
-              <p>React + Vite</p>
-              <p>Node.js + Express</p>
-              <p>MongoDB Atlas</p>
-              <p>JWT Authentication</p>
+            <div className="space-y-2 text-sm text-blue-100">
+              <p>Use Warnings before opening links.</p>
+              <p>Submit clear details for faster review.</p>
+              <p>Admins review reports before publishing.</p>
+              <p>For urgent cases, contact official authorities.</p>
             </div>
           </div>
         </div>
 
-        <div className="mx-auto mt-8 grid max-w-7xl gap-3 border-t border-white/10 pt-5 text-sm text-blue-100 md:grid-cols-2 md:items-center">
+        <div className="mx-auto mt-6 grid max-w-7xl gap-3 border-t border-white/10 pt-4 text-sm text-blue-100 md:grid-cols-2 md:items-center">
           <p>Copyright 2026 ScamCheck PH. All rights reserved.</p>
           <p className="md:text-right">For academic and cyber-awareness use.</p>
         </div>

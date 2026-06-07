@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { ExternalLink, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import StatusBadge from "../../components/StatusBadge";
 import api from "../../services/api";
@@ -15,6 +15,7 @@ function MyReportsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
   const [loading, setLoading] = useState(true);
+  const [selectedReport, setSelectedReport] = useState(null);
 
   useEffect(() => {
     const loadReports = async () => {
@@ -100,7 +101,13 @@ function MyReportsPage() {
                   </td>
                   <td>{formatDate(report.createdAt)}</td>
                   <td>
-                    <button className="font-semibold text-primary">View</button>
+                    <button
+                      className="inline-flex items-center gap-1 font-semibold text-primary hover:text-blue-700"
+                      onClick={() => setSelectedReport(report)}
+                    >
+                      View
+                      <ExternalLink size={14} />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -120,6 +127,93 @@ function MyReportsPage() {
           )}
         </div>
       </div>
+
+      {selectedReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/80 px-5 py-8">
+          <article className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-soft">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <StatusBadge status={selectedReport.status} />
+                <h2 className="mt-4 text-2xl font-extrabold text-slate-950">
+                  {selectedReport.title}
+                </h2>
+                <p className="mt-2 text-sm text-slate-500">
+                  {selectedReport.scamType} via {selectedReport.platform}
+                </p>
+              </div>
+
+              <button
+                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                onClick={() => setSelectedReport(null)}
+                aria-label="Close report details"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              <div className="rounded-xl bg-slate-50 p-4">
+                <h3 className="text-sm font-bold text-slate-950">Description</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {selectedReport.description}
+                </p>
+              </div>
+
+              {selectedReport.suspiciousLink && (
+                <div>
+                  <h3 className="text-sm font-bold text-slate-950">
+                    Suspicious Link / Contact
+                  </h3>
+                  <p className="mt-2 break-words rounded-xl border border-slate-100 p-3 text-sm text-slate-600">
+                    {selectedReport.suspiciousLink}
+                  </p>
+                </div>
+              )}
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-slate-100 p-4">
+                  <p className="text-xs font-semibold uppercase text-slate-400">
+                    Date Reported
+                  </p>
+                  <p className="mt-2 font-semibold">
+                    {formatDate(selectedReport.createdAt)}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-slate-100 p-4">
+                  <p className="text-xs font-semibold uppercase text-slate-400">
+                    Risk Level
+                  </p>
+                  <p className="mt-2 font-semibold">
+                    {selectedReport.riskLevel || "Pending review"}
+                  </p>
+                </div>
+              </div>
+
+              {selectedReport.safetyTip && (
+                <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+                  <h3 className="text-sm font-bold text-slate-950">
+                    Admin Safety Tip
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {selectedReport.safetyTip}
+                  </p>
+                </div>
+              )}
+
+              {selectedReport.adminRemarks && (
+                <div className="rounded-xl border border-slate-100 p-4">
+                  <h3 className="text-sm font-bold text-slate-950">
+                    Admin Remarks
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {selectedReport.adminRemarks}
+                  </p>
+                </div>
+              )}
+            </div>
+          </article>
+        </div>
+      )}
     </div>
   );
 }

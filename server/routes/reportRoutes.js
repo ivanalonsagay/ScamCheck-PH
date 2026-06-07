@@ -7,6 +7,7 @@ import {
   getPublicReports,
   getReportById,
   getReportStats,
+  getXScamReports,
   updateReportStatus,
 } from "../controllers/reportController.js";
 import { adminOnly, protect } from "../middleware/authMiddleware.js";
@@ -21,6 +22,9 @@ router.get("/my-reports", protect, getMyReports);
 
 // Public views verified scam warnings
 router.get("/public", getPublicReports);
+
+// Public views recent scam-related X posts
+router.get("/x-live", getXScamReports);
 
 // Admin dashboard statistics
 router.get("/stats", protect, adminOnly, getReportStats);
