@@ -1,7 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
-import { ShieldCheck } from "lucide-react";
+import { Send } from "lucide-react";
 import Button from "./Button";
 import useAuth from "../hooks/useAuth";
+import logo from "../assets/logo.png";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -18,9 +19,11 @@ function Navbar() {
     <header className="sticky top-0 z-40 bg-navy text-white shadow-lg">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
         <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600">
-            <ShieldCheck size={28} />
-          </div>
+          <img
+            src={logo}
+            alt="ScamCheck PH logo"
+            className="h-12 w-12 rounded-xl object-contain"
+          />
 
           <div>
             <h1 className="text-xl font-bold leading-none">
@@ -38,6 +41,9 @@ function Navbar() {
           </NavLink>
           <NavLink to="/warnings" className={linkClass}>
             Warnings
+          </NavLink>
+          <NavLink to="/dashboard/submit-report" className={linkClass}>
+            Report a Scam
           </NavLink>
           <NavLink to="/about" className={linkClass}>
             About
@@ -69,7 +75,10 @@ function Navbar() {
               </Link>
 
               <Link to="/signup">
-                <Button>Sign Up</Button>
+                <Button>
+                  <Send size={16} />
+                  Sign Up
+                </Button>
               </Link>
             </>
           )}

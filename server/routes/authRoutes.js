@@ -3,6 +3,7 @@ import {
   getCurrentUser,
   loginUser,
   registerUser,
+  updateCurrentUser,
 } from "../controllers/authController.js";
 import { adminOnly, protect } from "../middleware/authMiddleware.js";
 
@@ -16,6 +17,7 @@ router.post("/login", loginUser);
 
 // Get logged-in user
 router.get("/me", protect, getCurrentUser);
+router.put("/me", protect, updateCurrentUser);
 
 // Test admin-only access
 router.get("/admin-check", protect, adminOnly, (req, res) => {

@@ -1,30 +1,46 @@
 import { Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import StatusBadge from "../../components/StatusBadge";
+import api from "../../services/api";
+
+const formatDate = (date) =>
+  new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
 function MyReportsPage() {
-  const reports = [
-    {
-      title: "Fake iPhone 15 Pro Max Giveaway",
-      type: "Fake Giveaway",
-      platform: "Facebook",
-      status: "Verified",
-      date: "May 19, 2025",
-    },
-    {
-      title: "Investment Scheme Double Your Money",
-      type: "Investment Scam",
-      platform: "Messenger",
-      status: "Pending",
-      date: "May 18, 2025",
-    },
-    {
-      title: "Phishing Link Instagram Security",
-      type: "Phishing",
-      platform: "Instagram",
-      status: "Rejected",
-      date: "May 15, 2025",
-    },
-  ];
+  const [reports, setReports] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadReports = async () => {
+      try {
+        const { data } = await api.get("/reports/my-reports");
+        setReports(data.reports || []);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadReports();
+  }, []);
+
+  const filteredReports = useMemo(() => {
+    return reports
+      .filter((report) => {
+        const searchText = `${report.title} ${report.scamType} ${report.platform} ${report.status}`.toLowerCase();
+        return searchText.includes(searchTerm.toLowerCase());
+      })
+      .sort((a, b) => {
+        const firstDate = new Date(a.createdAt).getTime();
+        const secondDate = new Date(b.createdAt).getTime();
+        return sortOrder === "newest" ? secondDate - firstDate : firstDate - secondDate;
+      });
+  }, [reports, searchTerm, sortOrder]);
 
   return (
     <div>
@@ -42,12 +58,21 @@ function MyReportsPage() {
               className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
-            <input className="input pl-11" placeholder="Search reports..." />
+            <input
+              className="input pl-11"
+              placeholder="Search reports..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
           </div>
 
-          <select className="input md:w-48">
-            <option>Newest First</option>
-            <option>Oldest First</option>
+          <select
+            className="input md:w-48"
+            value={sortOrder}
+            onChange={(event) => setSortOrder(event.target.value)}
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
           </select>
         </div>
 
@@ -65,15 +90,15 @@ function MyReportsPage() {
             </thead>
 
             <tbody>
-              {reports.map((report) => (
-                <tr key={report.title} className="border-b last:border-none">
+              {filteredReports.map((report) => (
+                <tr key={report._id} className="border-b last:border-none">
                   <td className="py-4 font-semibold">{report.title}</td>
-                  <td>{report.type}</td>
+                  <td>{report.scamType}</td>
                   <td>{report.platform}</td>
                   <td>
                     <StatusBadge status={report.status} />
                   </td>
-                  <td>{report.date}</td>
+                  <td>{formatDate(report.createdAt)}</td>
                   <td>
                     <button className="font-semibold text-primary">View</button>
                   </td>
@@ -81,6 +106,18 @@ function MyReportsPage() {
               ))}
             </tbody>
           </table>
+
+          {!loading && filteredReports.length === 0 && (
+            <div className="py-10 text-center text-sm text-slate-500">
+              No reports found.
+            </div>
+          )}
+
+          {loading && (
+            <div className="py-10 text-center text-sm text-slate-500">
+              Loading your reports...
+            </div>
+          )}
         </div>
       </div>
     </div>

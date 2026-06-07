@@ -2,11 +2,9 @@ import { Outlet } from "react-router-dom";
 import {
   Bookmark,
   FileText,
-  Home,
   LayoutDashboard,
   PlusCircle,
   Settings,
-  User,
 } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 
@@ -32,11 +30,6 @@ function UserLayout() {
       label: "Bookmarks",
       to: "/dashboard/bookmarks",
       icon: Bookmark,
-    },
-    {
-      label: "Profile",
-      to: "/dashboard/profile",
-      icon: User,
     },
     {
       label: "Settings",

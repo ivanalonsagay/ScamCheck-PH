@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
-import { AlertTriangle, BadgeCheck, Send, ShieldCheck, Users } from "lucide-react";
+import {
+  AlertTriangle,
+  BadgeCheck,
+  Database,
+  Send,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import Button from "../../components/Button";
 import StatusBadge from "../../components/StatusBadge";
+import heroImage from "../../assets/home.png";
 
 function HomePage() {
   const featuredWarnings = [
@@ -23,7 +31,7 @@ function HomePage() {
   ];
 
   return (
-    <section className="bg-white">
+    <section className="bg-soft">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-2">
         <div>
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-primary">
@@ -31,15 +39,14 @@ function HomePage() {
             Community scam awareness platform
           </div>
 
-          <h1 className="text-4xl font-extrabold leading-tight text-slate-950 md:text-6xl">
+          <h2 className="text-4xl font-extrabold leading-tight text-slate-950 md:text-6xl">
             Report suspicious messages.{" "}
             <span className="text-primary">Protect the community.</span>
-          </h1>
+          </h2>
 
           <p className="mt-6 max-w-xl text-lg text-slate-600">
-            ScamCheck PH helps Filipinos report suspicious links, fake sellers,
-            phishing messages, and online scam attempts before more people become
-            victims.
+            ScamCheck PH helps Filipinos identify, report, and avoid online scams.
+            Together, verified reports become public warnings that keep others safe.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
@@ -59,25 +66,19 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="card p-8">
-          <div className="rounded-3xl bg-gradient-to-br from-blue-50 to-white p-8">
-            <div className="mx-auto flex h-56 max-w-md items-center justify-center rounded-3xl border border-blue-100 bg-white shadow-soft">
-              <div className="text-center">
-                <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-red-100 text-red-600">
-                  <AlertTriangle size={48} />
-                </div>
-                <h3 className="text-2xl font-bold">Scam Alert</h3>
-                <p className="mt-2 text-slate-500">
-                  Verify before you trust suspicious links.
-                </p>
-              </div>
-            </div>
+        <div className="card overflow-hidden p-4">
+          <div className="rounded-xl bg-blue-50">
+            <img
+              src={heroImage}
+              alt="Scam alert protection illustration"
+              className="h-full w-full rounded-xl object-cover"
+            />
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-5 pb-16">
-        <div className="card grid gap-6 p-6 md:grid-cols-3">
+        <div className="card grid gap-6 p-6 md:grid-cols-4">
           <div className="flex gap-4">
             <BadgeCheck className="text-primary" />
             <div>
@@ -104,6 +105,16 @@ function HomePage() {
               <h3 className="font-bold">Protect</h3>
               <p className="text-sm text-slate-500">
                 Build a safer online community together.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <Database className="text-primary" />
+            <div>
+              <h3 className="font-bold">Built with MERN</h3>
+              <p className="text-sm text-slate-500">
+                React, Express, Node, and MongoDB Atlas.
               </p>
             </div>
           </div>

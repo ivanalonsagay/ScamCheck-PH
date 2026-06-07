@@ -34,6 +34,18 @@ body {
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
+.input.pl-11 {
+  padding-left: 44px;
+}
+
+.input.pl-12 {
+  padding-left: 48px;
+}
+
+.input.pr-12 {
+  padding-right: 48px;
+}
+
 /* Clean card style */
 .card {
   background: white;

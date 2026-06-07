@@ -5,6 +5,7 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 // Load .env variables
 dotenv.config();
@@ -15,10 +16,15 @@ connectDB();
 // Create Express app
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : []),
+];
+
 // Allow React frontend to connect to backend
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -50,6 +56,9 @@ app.use("/api/auth", authRoutes);
 // Report routes
 app.use("/api/reports", reportRoutes);
 
+// Admin routes
+app.use("/api/admin", adminRoutes);
+
 // Handle unknown API routes
 app.use((req, res) => {
   res.status(404).json({
@@ -62,6 +71,10 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 
 // Start backend server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+export default app;

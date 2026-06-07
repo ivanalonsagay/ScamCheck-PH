@@ -283,6 +283,55 @@ export const getReportStats = async (req, res) => {
       },
     ]);
 
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 6);
+    startDate.setHours(0, 0, 0, 0);
+
+    const reportsOverTimeRaw = await Report.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+            },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    ]);
+
+    const reportCountsByDay = reportsOverTimeRaw.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {});
+
+    const reportsOverTime = Array.from({ length: 7 }, (_, index) => {
+      const day = new Date(startDate);
+      day.setDate(startDate.getDate() + index);
+
+      const key = day.toISOString().slice(0, 10);
+
+      return {
+        date: key,
+        label: day.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+        count: reportCountsByDay[key] || 0,
+      };
+    });
+
     // Get latest reports for admin dashboard
     const recentReports = await Report.find()
       .populate("submittedBy", "name email")
@@ -298,6 +347,7 @@ export const getReportStats = async (req, res) => {
         rejectedReports,
         reportsByType,
         reportsByPlatform,
+        reportsOverTime,
         recentReports,
       },
     });

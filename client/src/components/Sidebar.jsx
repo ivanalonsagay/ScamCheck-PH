@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { LogOut, ShieldCheck } from "lucide-react";
+import { LogOut } from "lucide-react";
 import useAuth from "../hooks/useAuth";
+import logo from "../assets/logo.png";
 
 function Sidebar({ items, title = "ScamCheck PH" }) {
   const { logout } = useAuth();
@@ -19,9 +20,11 @@ function Sidebar({ items, title = "ScamCheck PH" }) {
       <div className="flex h-full flex-col">
         <div className="px-6 py-7">
           <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600">
-              <ShieldCheck size={27} />
-            </div>
+            <img
+              src={logo}
+              alt="ScamCheck PH logo"
+              className="h-12 w-12 rounded-xl object-contain"
+            />
 
             <div>
               <h2 className="font-bold">{title}</h2>

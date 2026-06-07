@@ -1,8 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { AuthContext } from "./AuthContextStore";
 import api from "../services/api";
-
-// Create global auth storage
-export const AuthContext = createContext(null);
 
 function normalizeUser(user) {
   // Backend sometimes returns id, sometimes _id
@@ -15,11 +13,6 @@ function normalizeUser(user) {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // Current logged-in user
   const [loading, setLoading] = useState(true); // Page loading state
-
-  useEffect(() => {
-    // Check login when app opens
-    loadCurrentUser();
-  }, []);
 
   const loadCurrentUser = async () => {
     const token = localStorage.getItem("scamcheck_token");
@@ -35,7 +28,7 @@ export function AuthProvider({ children }) {
       const { data } = await api.get("/auth/me");
 
       setUser(normalizeUser(data.user));
-    } catch (error) {
+    } catch {
       // Remove invalid or expired token
       localStorage.removeItem("scamcheck_token");
       localStorage.removeItem("scamcheck_user");
@@ -44,6 +37,12 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Check login when app opens
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadCurrentUser();
+  }, []);
 
   const register = async (formData) => {
     // Send register request to backend
@@ -75,6 +74,16 @@ export function AuthProvider({ children }) {
     return normalizedUser;
   };
 
+  const updateProfile = async (formData) => {
+    const { data } = await api.put("/auth/me", formData);
+
+    const normalizedUser = normalizeUser(data.user);
+    localStorage.setItem("scamcheck_user", JSON.stringify(normalizedUser));
+    setUser(normalizedUser);
+
+    return normalizedUser;
+  };
+
   const logout = () => {
     // Clear browser login data
     localStorage.removeItem("scamcheck_token");
@@ -89,6 +98,7 @@ export function AuthProvider({ children }) {
     loading,
     register,
     login,
+    updateProfile,
     logout,
     isAuthenticated: Boolean(user),
   };

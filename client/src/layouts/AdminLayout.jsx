@@ -4,7 +4,6 @@ import {
   FileText,
   FolderKanban,
   LayoutDashboard,
-  Settings,
   Users,
 } from "lucide-react";
 import Sidebar from "../components/Sidebar";
@@ -35,11 +34,6 @@ function AdminLayout() {
       label: "Categories",
       to: "/admin/categories",
       icon: FolderKanban,
-    },
-    {
-      label: "Settings",
-      to: "/admin/settings",
-      icon: Settings,
     },
   ];
 
