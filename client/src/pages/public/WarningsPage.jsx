@@ -42,6 +42,7 @@ function WarningsPage() {
   const [intelRefreshing, setIntelRefreshing] = useState(false);
   const [intelError, setIntelError] = useState("");
   const [intelLastUpdated, setIntelLastUpdated] = useState(null);
+  const [intelRefreshCount, setIntelRefreshCount] = useState(0);
   const [selectedIntelReport, setSelectedIntelReport] = useState(null);
   const [bookmarkedIds, setBookmarkedIds] = useState(() => {
     const savedBookmarks = JSON.parse(
@@ -98,10 +99,15 @@ function WarningsPage() {
         setIntelRefreshing(true);
       }
 
-      const { data } = await api.get("/reports/phishing-live");
+      const { data } = await api.get("/reports/phishing-live", {
+        params: {
+          t: Date.now(),
+        },
+      });
 
       setIntelReports(data.reports || []);
-      setIntelLastUpdated(new Date());
+      setIntelLastUpdated(data.fetchedAt ? new Date(data.fetchedAt) : new Date());
+      setIntelRefreshCount((current) => current + 1);
     } catch (err) {
       setIntelError(
         err.response?.data?.message || "Unable to load phishing intelligence."
@@ -337,6 +343,7 @@ function WarningsPage() {
             <p className="mt-1 text-sm text-slate-500">
               Recent phishing URLs from PhishStats. Refreshes every 60 seconds.
               {intelLastUpdated ? ` Last updated ${formatTime(intelLastUpdated)}.` : ""}
+              {intelRefreshCount > 0 ? ` Refresh #${intelRefreshCount}.` : ""}
             </p>
           </div>
 
@@ -349,7 +356,7 @@ function WarningsPage() {
               size={17}
               className={intelRefreshing ? "animate-spin" : ""}
             />
-            Refresh Feed
+            {intelRefreshing ? "Refreshing..." : "Refresh Feed"}
           </button>
         </div>
 

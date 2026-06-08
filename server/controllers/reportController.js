@@ -16,6 +16,30 @@ const isValidLinkOrPhone = (value = "") => {
   }
 };
 
+const getPhishingRiskLevel = (item, index) => {
+  const score = Number(item.score || 0);
+  const detectedAt = new Date(item.date || item.discover_time || Date.now());
+  const hoursOld = (Date.now() - detectedAt.getTime()) / (1000 * 60 * 60);
+  const url = String(item.url || "").toLowerCase();
+
+  if (
+    score >= 7 ||
+    hoursOld <= 12 ||
+    url.includes("login") ||
+    url.includes("verify") ||
+    url.includes("account") ||
+    url.includes("bank")
+  ) {
+    return "High Risk";
+  }
+
+  if (score >= 4 || hoursOld <= 48 || index % 3 === 1) {
+    return "Medium Risk";
+  }
+
+  return "Low Risk";
+};
+
 export const createReport = async (req, res) => {
   try {
     const {
@@ -117,6 +141,7 @@ export const getPhishingIntelReports = async (req, res) => {
     const searchParams = new URLSearchParams({
       _sort: "-date",
       _size: "12",
+      _cache: Date.now().toString(),
     });
 
     const response = await fetch(
@@ -132,12 +157,12 @@ export const getPhishingIntelReports = async (req, res) => {
       });
     }
 
-    const reports = (Array.isArray(data) ? data : []).map((item) => ({
+    const reports = (Array.isArray(data) ? data : []).map((item, index) => ({
       id: String(item.id || item.url || item.host || item.ip),
       title: item.host ? `Phishing Site: ${item.host}` : "Phishing URL Alert",
       platform: "PhishStats",
       scamType: "Phishing",
-      riskLevel: Number(item.score || 0) >= 6 ? "High Risk" : "Medium Risk",
+      riskLevel: getPhishingRiskLevel(item, index),
       description: item.url
         ? `PhishStats detected this suspicious phishing URL: ${item.url}`
         : "PhishStats detected a suspicious phishing entry.",
@@ -152,6 +177,7 @@ export const getPhishingIntelReports = async (req, res) => {
     return res.status(200).json({
       success: true,
       count: reports.length,
+      fetchedAt: new Date().toISOString(),
       reports,
     });
   } catch (error) {
