@@ -2,7 +2,7 @@ import {
   AlertTriangle,
   BookOpen,
   CheckCircle2,
-  Database,
+  Clock3,
   FileText,
   ShieldCheck,
   Users,
@@ -36,10 +36,10 @@ function AboutPage() {
             ScamCheck PH helps communities verify, report, and avoid online scams.
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-blue-100">
-            The system is designed for scam awareness and academic MERN Stack
-            development. It turns user-submitted scam reports into admin-reviewed
-            public warnings, helping people recognize suspicious patterns before
-            they click, pay, or share personal information.
+            ScamCheck PH is a community awareness space where people can share
+            suspicious messages, links, fake seller activity, and online fraud
+            patterns. Verified reports become public warnings so others can check
+            before they click, pay, or share personal information.
           </p>
         </div>
       </div>
@@ -74,20 +74,17 @@ function AboutPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">
           <div className="card p-8">
-            <h2 className="text-2xl font-extrabold">Project Scope</h2>
+            <h2 className="text-2xl font-extrabold">How ScamCheck Helps You</h2>
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               {[
-                "Login/Register",
-                "Submit Scam Report",
-                "View My Reports",
-                "Public Verified Scam Board",
-                "Admin Dashboard",
-                "Admin Verify/Reject Reports",
-                "Deployment",
+                "Search verified scam warnings before trusting a message or link.",
+                "Report suspicious contacts, fake sellers, and payment requests.",
+                "Track whether your submitted report is pending, verified, or rejected.",
+                "Read safety tips added by reviewers for each verified warning.",
               ].map((item) => (
-                <div key={item} className="flex items-center gap-3 rounded-xl bg-slate-50 p-4">
-                  <CheckCircle2 className="text-green-600" size={18} />
-                  <span className="text-sm font-semibold">{item}</span>
+                <div key={item} className="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+                  <CheckCircle2 className="mt-0.5 text-green-600" size={18} />
+                  <span className="text-sm leading-6 text-slate-600">{item}</span>
                 </div>
               ))}
             </div>
@@ -109,16 +106,33 @@ function AboutPage() {
                 of the moderation record.
               </p>
             </div>
+
+            <h2 className="mt-8 text-2xl font-extrabold">What to Check Before You Trust</h2>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {[
+                "Sender identity: verify the account, number, or email through official channels.",
+                "Payment request: avoid advance payments to personal accounts.",
+                "Urgency: be careful with messages that pressure you to act fast.",
+                "Links: inspect URLs and avoid shortened or misspelled domains.",
+                "Personal data: never share OTP, MPIN, passwords, or recovery codes.",
+                "Proof: save screenshots and transaction details if you report a scam.",
+              ].map((tip) => (
+                <div key={tip} className="rounded-xl border border-slate-100 p-4 text-sm leading-6 text-slate-600">
+                  {tip}
+                </div>
+              ))}
+            </div>
           </div>
 
           <aside className="space-y-6">
             <div className="card p-6">
-              <Database className="text-primary" />
-              <h2 className="mt-4 text-xl font-bold">System Stack</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                React, Vite, Tailwind CSS, Axios, Recharts, Node.js, Express.js,
-                MongoDB Atlas, Mongoose, JWT, bcryptjs, dotenv, and cors.
-              </p>
+              <Clock3 className="text-amber-600" />
+              <h2 className="mt-4 text-xl font-bold">Report Status Guide</h2>
+              <div className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+                <p><span className="font-bold text-amber-700">Pending:</span> waiting for admin review.</p>
+                <p><span className="font-bold text-green-700">Verified:</span> reviewed and shown publicly.</p>
+                <p><span className="font-bold text-red-700">Rejected:</span> not enough evidence or not confirmed.</p>
+              </div>
             </div>
 
             <div className="card p-6">

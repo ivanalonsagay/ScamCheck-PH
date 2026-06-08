@@ -47,8 +47,8 @@ function HomePage() {
       icon: Users,
     },
     {
-      title: "Built with MERN",
-      text: "React, Express, Node, and MongoDB Atlas.",
+      title: "Authenticate",
+      text: "Verify the identity of websites and services.",
       icon: Database,
     },
   ];
