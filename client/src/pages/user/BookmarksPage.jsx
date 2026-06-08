@@ -1,4 +1,11 @@
-import { Bookmark, ExternalLink, Search, Trash2 } from "lucide-react";
+import {
+  Bookmark,
+  CalendarDays,
+  ExternalLink,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
@@ -15,6 +22,7 @@ function BookmarksPage() {
     JSON.parse(localStorage.getItem("scamcheck_bookmarks") || "[]")
   );
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBookmark, setSelectedBookmark] = useState(null);
 
   const filteredBookmarks = useMemo(() => {
     return bookmarks.filter((bookmark) => {
@@ -23,10 +31,15 @@ function BookmarksPage() {
     });
   }, [bookmarks, searchTerm]);
 
-  const removeBookmark = (id) => {
+  const removeBookmark = (event, id) => {
+    event.stopPropagation();
     const nextBookmarks = bookmarks.filter((bookmark) => bookmark._id !== id);
     localStorage.setItem("scamcheck_bookmarks", JSON.stringify(nextBookmarks));
     setBookmarks(nextBookmarks);
+
+    if (selectedBookmark?._id === id) {
+      setSelectedBookmark(null);
+    }
   };
 
   return (
@@ -62,12 +75,16 @@ function BookmarksPage() {
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {filteredBookmarks.map((bookmark) => (
-            <article key={bookmark._id} className="rounded-xl border border-slate-100 p-5">
+            <article
+              key={bookmark._id}
+              className="cursor-pointer rounded-xl border border-slate-100 p-5 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-soft"
+              onClick={() => setSelectedBookmark(bookmark)}
+            >
               <div className="flex items-start justify-between gap-3">
                 <StatusBadge status={bookmark.riskLevel} />
                 <button
                   className="rounded-lg p-2 text-red-600 hover:bg-red-50"
-                  onClick={() => removeBookmark(bookmark._id)}
+                  onClick={(event) => removeBookmark(event, bookmark._id)}
                   title="Remove bookmark"
                 >
                   <Trash2 size={17} />
@@ -108,6 +125,84 @@ function BookmarksPage() {
           </div>
         )}
       </div>
+
+      {selectedBookmark && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/80 px-5 py-8">
+          <article className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-soft">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <StatusBadge status={selectedBookmark.riskLevel} />
+                <h2 className="mt-4 text-2xl font-extrabold text-slate-950">
+                  {selectedBookmark.title}
+                </h2>
+                <p className="mt-2 text-sm text-slate-500">
+                  {selectedBookmark.scamType} via {selectedBookmark.platform}
+                </p>
+              </div>
+
+              <button
+                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                onClick={() => setSelectedBookmark(null)}
+                aria-label="Close bookmark details"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-[1fr_260px]">
+              <div className="space-y-5">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-950">Scam Details</h3>
+                  <p className="mt-2 leading-7 text-slate-600">
+                    {selectedBookmark.description || "No description provided."}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+                  <h3 className="text-sm font-bold text-slate-950">
+                    Admin Safety Tip
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {selectedBookmark.safetyTip || "Verify before you trust."}
+                  </p>
+                </div>
+
+                {selectedBookmark.suspiciousLink && (
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-950">
+                      Suspicious Link / Contact
+                    </h3>
+                    <p className="mt-2 break-words rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
+                      {selectedBookmark.suspiciousLink}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <aside className="space-y-3 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm">
+                <h3 className="font-bold text-slate-950">Saved Warning</h3>
+                <p className="text-slate-600">
+                  Report ID: #{selectedBookmark._id.slice(-6).toUpperCase()}
+                </p>
+                <p className="flex items-center gap-2 text-slate-600">
+                  <CalendarDays size={16} />
+                  Reported {formatDate(selectedBookmark.createdAt)}
+                </p>
+                <p className="text-slate-600">
+                  Verified {formatDate(selectedBookmark.updatedAt)}
+                </p>
+                <button
+                  className="inline-flex items-center gap-2 font-semibold text-red-600"
+                  onClick={(event) => removeBookmark(event, selectedBookmark._id)}
+                >
+                  <Trash2 size={15} />
+                  Remove bookmark
+                </button>
+              </aside>
+            </div>
+          </article>
+        </div>
+      )}
     </div>
   );
 }
