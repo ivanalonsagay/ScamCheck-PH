@@ -112,32 +112,15 @@ export const getPublicReports = async (req, res) => {
   }
 };
 
-export const getXScamReports = async (req, res) => {
+export const getPhishingIntelReports = async (req, res) => {
   try {
-    if (!process.env.X_BEARER_TOKEN) {
-      return res.status(200).json({
-        success: true,
-        configured: false,
-        reports: [],
-        message: "X API is not configured",
-      });
-    }
-
-    const query =
-      '(scam OR phishing OR "fake seller" OR "gcash scam" OR "investment scam") lang:en -is:retweet';
     const searchParams = new URLSearchParams({
-      query,
-      max_results: "10",
-      "tweet.fields": "created_at,author_id,public_metrics",
+      _sort: "-date",
+      _size: "12",
     });
 
     const response = await fetch(
-      `https://api.x.com/2/tweets/search/recent?${searchParams.toString()}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.X_BEARER_TOKEN}`,
-        },
-      }
+      `https://api.phishstats.info/api/phishing?${searchParams.toString()}`
     );
 
     const data = await response.json();
@@ -145,32 +128,36 @@ export const getXScamReports = async (req, res) => {
     if (!response.ok) {
       return res.status(response.status).json({
         success: false,
-        message: data.detail || data.title || "Unable to fetch X scam reports",
+        message: data.message || "Unable to fetch phishing intelligence reports",
       });
     }
 
-    const reports = (data.data || []).map((post) => ({
-      id: post.id,
-      title: "X Scam Alert",
-      platform: "X",
-      scamType: "External Scam Report",
-      riskLevel: "Medium Risk",
-      description: post.text,
-      sourceUrl: `https://x.com/i/web/status/${post.id}`,
-      createdAt: post.created_at,
-      metrics: post.public_metrics,
+    const reports = (Array.isArray(data) ? data : []).map((item) => ({
+      id: String(item.id || item.url || item.host || item.ip),
+      title: item.host ? `Phishing Site: ${item.host}` : "Phishing URL Alert",
+      platform: "PhishStats",
+      scamType: "Phishing",
+      riskLevel: Number(item.score || 0) >= 6 ? "High Risk" : "Medium Risk",
+      description: item.url
+        ? `PhishStats detected this suspicious phishing URL: ${item.url}`
+        : "PhishStats detected a suspicious phishing entry.",
+      sourceUrl: item.url || "https://phishstats.info/",
+      createdAt: item.date || item.discover_time || new Date().toISOString(),
+      score: item.score,
+      host: item.host,
+      ip: item.ip,
+      country: item.countryname || item.country,
     }));
 
     return res.status(200).json({
       success: true,
-      configured: true,
       count: reports.length,
       reports,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Server error while fetching X scam reports",
+      message: "Server error while fetching phishing intelligence reports",
       error: error.message,
     });
   }
